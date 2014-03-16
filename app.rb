@@ -1,3 +1,5 @@
+set :public_folder, 'public'
+
 get '/' do
-	return File.read ("Public/index.html")
+	return File.read ("public/index.html")
 end
