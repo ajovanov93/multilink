@@ -1,3 +1,3 @@
 get '/' do
-  "Sinatra Heroku Cedar Template - The bare minimum for a sinatra app on cedar, running rack, and using bundler."
+	return File.read ("Public/index.html")
 end

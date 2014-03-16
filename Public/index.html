@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<title>
+			Multilink
+		</title>
+		<script type="text/javascript" src="code.js"></script>
+		<script type="text/javascript">
+			window.onload = function () {
+				var mode  = getMode  ();
+				var links = getLinks ();
+
+				if (links === []) {
+					return;
+				}
+
+				if (mode == "redirect")
+					redirect (links);
+				else if (mode == "split")
+					split (links);
+			}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
