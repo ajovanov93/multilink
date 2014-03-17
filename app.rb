@@ -1,5 +1,5 @@
 set :public_folder, 'public'
 
 get '/' do
-	return File.read (File.join "public", "index.html")
+	send_file File.join(settings.public_folder, 'index.html')
 end
