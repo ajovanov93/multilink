@@ -1,0 +1,14 @@
+body {
+    padding: 20px;
+    font-size: 18pt;
+    font-family: sans;
+    line-height: 35px;
+}
+
+ul {
+    margin-top: 0px;
+
+    margin-bottom: 10px;
+
+    list-style: square;
+}
