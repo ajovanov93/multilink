@@ -10,9 +10,14 @@ function getLinks () {
     try {
 	var links = linksRE.exec (url)[1];
 
-	return links.split (",");
+	var result = links.split (",");
+
+	if (result[0] != "")
+	    return result;
+	else
+	    throw "InvalidArgument: links mustn't be empty";
     } catch (ex) {
-	document.write ("error: links are null");
+	noLinks ();
 
 	return [];
     }
@@ -31,17 +36,18 @@ function getMode () {
 }
 
 function redirectLink (link) {
-    // do not open links that execute javascript code
+    // Do not open links that execute javascript code
     if (link.match (/javascript:/)) {
 	return;
     }
 
+    // Assume http if not protocol supplied
     if (!link.match (protocolRE))
 	link = "http://" + link;
 
     var win = window.open (link, "_blank");
 
-    win.focus ();
+    //win.focus ();
 }
 
 function redirect (links) {
@@ -55,10 +61,14 @@ function redirect (links) {
 function redirectWaitProgress () {
     window.redirectWaitSeconds -= 1;
 
-    if (window.redirectWaitSeconds < 0) {
+    if (window.redirectWaitSeconds == 0) {
 	redirect (getLinks ());
 
 	clearInterval (window.redirectWait);
+
+	document.querySelector ("#redirect_btn").innerHTML = "Redirected. Happy browsing.";
+	
+	document.querySelector ("#redirect_btn").disabled  = true;
     } else {
 	document.querySelector ("#redirect_btn").innerHTML = "You will be redirected in " + window.redirectWaitSeconds + " seconds. Click to disable."
     }
@@ -71,6 +81,10 @@ function buttonClicked () {
 	document.querySelector ("#redirect_btn").innerHTML = "Redirect";
     } else {
 	redirect (getLinks ()); 
+
+	document.querySelector ("#redirect_btn").innerHTML = "Redirected. Happy browsing.";
+	
+	document.querySelector ("#redirect_btn").disabled  = true;
     }
 }
 
@@ -88,11 +102,24 @@ function fillLinksList () {
     });
 }
 
+function noLinks () {
+    console.log ("No links")
+
+    var ul = document.querySelector ("#links");
+
+    ul.innerHTML = "<li class='no-links-error'> Sorry. You got a malformed url. </li>";   
+
+    var btn = document.querySelector ("#redirect_btn");
+
+    btn.disabled  = true;
+    btn.innerHTML = "No links :(";
+}
+
 window.onload = function () {
     var mode  = getMode  ();
     var links = getLinks ();
 
-    if (links === []) {
+    if (links == []) {
 	return;
     }
 

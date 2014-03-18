@@ -12,3 +12,11 @@ ul {
 
     list-style: square;
 }
+
+code {
+    margin-left: 25px;
+}
+
+.no-links-error {
+    color: red;
+}

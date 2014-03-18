@@ -1,0 +1,43 @@
+<html>
+    <head>
+	<title>
+	    Multilink usage
+	</title>
+
+	<link href="theme.css" rel="stylesheet" > </link>
+    </head>
+
+    <body>
+	
+	The general format of the url is: <br />
+    
+	<code>
+	    multilink.herokuapp.com?links={links}&amp;mode=(manual|automatic)
+	</code>
+	<br />
+
+	Example: <br />
+	<code>
+	    multilink.herokuapp.com?links=www.google.com,www.yahoo.com,www.bing.com
+	</code>
+	<br />
+
+	You'll notice how mode is ommited from the example. When ommited it defaults to manual. <br />
+	Here's another example, this time with mode set to automatic. <br />
+	<code>
+	    multilink.herokuapp.com?links=www.reddit.com,www.slashdot.org&amp;mode=automatic
+	</code>
+	<br /> 	
+
+	<hr />
+
+	There are a few things to keep in mind when creating links:
+	<ul>
+	    <li> If the protocol is not supplied (as in the example above) it will default to http. </li>
+	    <li> javascript: links are not allowed and will just be ignored. </li>
+	    <li> Currently only http(s), ftp and mailto protocols are supported. </li>
+	</ul>
+    </body>
+
+</html>
+
