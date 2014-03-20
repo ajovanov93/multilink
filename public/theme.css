@@ -20,3 +20,21 @@ code {
 .no-links-error {
     color: red;
 }
+
+#automatic-allowed {
+    color: green;
+}
+
+#allow-automatic-link {
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+    color: blue;
+}
+
+a:hover {
+    text-decoration: underline;
+    cursor: default;
+}

@@ -1,9 +1,17 @@
-window.protocolRE = /(https?|ftp|mailto):\/\//;
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+///                Copyright (c) Aleksandar Jovanov 2014                     ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+window.protocolRE = /(https?|ftp|mailto):\/{2}/;
 
 window.linksRE    = /.*links=([a-zA-Z0-9.\-,:\/]*)/;
 
 window.modeRE     = /.*mode=(automatic|manual)/;
 
+////////////////////////////////////////////////////////////////////////////////
 function getLinks () {
     var url   = window.location.href;
 
@@ -35,13 +43,22 @@ function getMode () {
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+function runStartupChecks () {
+    if (!'localStorage' in window) {
+	alert ("Local storage is not supported.");
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 function redirectLink (link) {
     // Do not open links that execute javascript code
     if (link.match (/javascript:/)) {
 	return;
     }
 
-    // Assume http if not protocol supplied
+    // Assume http if protocol is not supplied
     if (!link.match (protocolRE))
 	link = "http://" + link;
 
@@ -58,6 +75,7 @@ function redirect (links) {
     }
 }
 
+// Only for automatic redirects. Manual redirects are instantenous.
 function redirectWaitProgress () {
     window.redirectWaitSeconds -= 1;
 
@@ -66,28 +84,17 @@ function redirectWaitProgress () {
 
 	clearInterval (window.redirectWait);
 
-	document.querySelector ("#redirect_btn").innerHTML = "Redirected. Happy browsing.";
+	var btn = document.querySelector ("#redirect-btn");
+
+	btn.innerHTML = "Redirected. Happy browsing.";
 	
-	document.querySelector ("#redirect_btn").disabled  = true;
+	btn.disabled  = true;
     } else {
-	document.querySelector ("#redirect_btn").innerHTML = "You will be redirected in " + window.redirectWaitSeconds + " seconds. Click to disable."
+	document.querySelector ("#redirect-btn").innerHTML = "You will be redirected in " + window.redirectWaitSeconds + " seconds. Click to stop."
     }
 }
 
-function buttonClicked () {
-    if (window.redirectWait) {
-	clearInterval (window.redirectWait);
-
-	document.querySelector ("#redirect_btn").innerHTML = "Redirect";
-    } else {
-	redirect (getLinks ()); 
-
-	document.querySelector ("#redirect_btn").innerHTML = "Redirected. Happy browsing.";
-	
-	document.querySelector ("#redirect_btn").disabled  = true;
-    }
-}
-
+////////////////////////////////////////////////////////////////////////////////
 function fillLinksList () {
     var ul = document.querySelector ("#links");
 
@@ -103,31 +110,77 @@ function fillLinksList () {
 }
 
 function noLinks () {
-    console.log ("No links")
+    //console.log ("No links")
 
     var ul = document.querySelector ("#links");
 
     ul.innerHTML = "<li class='no-links-error'> Sorry. You got a malformed url. </li>";   
 
-    var btn = document.querySelector ("#redirect_btn");
+    var btn = document.querySelector ("#redirect-btn");
 
     btn.disabled  = true;
     btn.innerHTML = "No links :(";
 }
 
+////////////////////////////////////////////////////////////////////////////////
+function buttonClicked () {
+    if (window.redirectWait === 1) {
+	clearInterval (window.redirectWait);
+
+	// clearInterval will only stop the functions from firing again, it will not recycle the interval id
+	// so we do it manually
+	window.redirectWait = -1;
+
+	this.innerHTML = "Redirect";
+    } else {
+	redirect (getLinks ()); 
+
+	this.innerHTML = "Redirected. Happy browsing.";
+	
+	this.disabled  = true;
+    }
+}
+
+function linkClicked () {
+    var state = this.innerHTML === "(enable)" ? true : false; 
+
+    if (state === true)
+	this.innerHTML = "(disable)";
+    else
+	this.innerHTML = "(enable)";
+
+    window.localStorage ["allow_automatic"] = state;
+
+    window.allowAutomatic = state;
+
+    document.querySelector ("#automatic-allowed").innerHTML = window.allowAutomatic ? "enabled" : "disabled"; 
+}
+
+////////////////////////////////////////////////////////////////////////////////
 window.onload = function () {
-    var mode  = getMode  ();
-    var links = getLinks ();
+    runStartupChecks ();
+
+    var mode     = getMode  ();
+    var links    = getLinks ();
+    var allowAutomaticLink = document.querySelector ("#allow-automatic-link");
+
+    window.allowAutomatic = window.localStorage ["allow_automatic"] || "false";
 
     if (links == []) {
 	return;
     }
 
-    document.querySelector ("#redirect_btn").addEventListener ("click", buttonClicked);
+    document.querySelector ("#redirect-btn").addEventListener ("click", buttonClicked);
+
+    allowAutomaticLink.addEventListener ("click", linkClicked);
+
+    allowAutomaticLink.innerHTML = window.allowAutomatic === "true" ? "(disable)" : "(enable)";
+
+    document.querySelector ("#automatic-allowed").innerHTML = window.allowAutomatic === "true" ? "enabled" : "disabled"; 
 
     fillLinksList ();
 
-    if (mode == "automatic") {
+    if (mode == "automatic" && window.allowAutomatic === "true") {
 	window.redirectWaitSeconds = 5;
 	
 	window.redirectWait = setInterval (redirectWaitProgress, 1000);
