@@ -36,8 +36,8 @@ Settings = {
 
     //////////////////////////////////////////////////////////// 
     load: function () {
-	Settings.automaticAllowed = Settings.strToBool (window.localStorage ["allow_automatic"]);
+	Settings.automaticAllowed = Settings.strToBool (window.localStorage ["allow_automatic"] || "false");
 
-	Settings.timeout          = parseInt (window.localStorage ["timeout"]);
+	Settings.timeout          = parseInt (window.localStorage ["timeout"] || "5");
     }
 }

@@ -7,7 +7,7 @@ function timeoutEntryTextChanged () {
 
     var messageElem = document.querySelector ("#timeout-validation-message");
 
-    var ok = text.match (re);
+    var ok = re.test (text);
 
     if (ok) {
 	Settings.setTimeout (parseInt (text));
