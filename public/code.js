@@ -142,18 +142,26 @@ function buttonClicked () {
 }
 
 function linkClicked () {
-    var state = this.innerHTML === "(enable)" ? true : false; 
+    Settings.toggleAutomatic ();
 
-    if (state === true)
-	this.innerHTML = "(disable)";
-    else
-	this.innerHTML = "(enable)";
+    this.innerHTML = Settings.isAutomaticAllowed () ? "(disable)" : "(enable)";
 
-    window.localStorage ["allow_automatic"] = state;
+    document.querySelector ("#automatic-allowed").innerHTML = Settings.isAutomaticAllowed () ? "enabled" : "disabled"; 
+}
 
-    window.allowAutomatic = state;
+////////////////////////////////////////////////////////////////////////////////
+function setupGUI () {
+    var allowAutomaticLink = document.querySelector ("#allow-automatic-link");
 
-    document.querySelector ("#automatic-allowed").innerHTML = window.allowAutomatic ? "enabled" : "disabled"; 
+    document.querySelector ("#redirect-btn").addEventListener ("click", buttonClicked);
+
+    allowAutomaticLink.addEventListener ("click", linkClicked);
+
+    allowAutomaticLink.innerHTML = Settings.isAutomaticAllowed () ? "(disable)" : "(enable)";
+
+    document.querySelector ("#automatic-allowed").innerHTML = Settings.isAutomaticAllowed () ? "enabled" : "disabled"; 
+
+    fillLinksList ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,26 +170,17 @@ window.onload = function () {
 
     var mode     = getMode  ();
     var links    = getLinks ();
-    var allowAutomaticLink = document.querySelector ("#allow-automatic-link");
 
-    window.allowAutomatic = window.localStorage ["allow_automatic"] || "false";
+    Settings.load ();
+
+    setupGUI ();
 
     if (links == []) {
 	return;
     }
 
-    document.querySelector ("#redirect-btn").addEventListener ("click", buttonClicked);
-
-    allowAutomaticLink.addEventListener ("click", linkClicked);
-
-    allowAutomaticLink.innerHTML = window.allowAutomatic === "true" ? "(disable)" : "(enable)";
-
-    document.querySelector ("#automatic-allowed").innerHTML = window.allowAutomatic === "true" ? "enabled" : "disabled"; 
-
-    fillLinksList ();
-
-    if (mode == "automatic" && window.allowAutomatic === "true") {
-	window.redirectWaitSeconds = 5;
+    if (mode == "automatic" && Settings.isAutomaticAllowed ()) {
+	window.redirectWaitSeconds = Settings.getTimeout ();
 	
 	window.redirectWait = setInterval (redirectWaitProgress, 1000);
     }

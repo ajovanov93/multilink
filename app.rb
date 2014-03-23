@@ -15,3 +15,7 @@ end
 get '/tab-solution' do 
     serve "tab-solution.html"
 end
+
+get '/settings' do 
+    serve "settings.html"
+end

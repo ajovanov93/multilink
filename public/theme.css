@@ -38,3 +38,13 @@ a:hover {
     text-decoration: underline;
     cursor: default;
 }
+
+input {
+    padding: 5px;
+}
+
+.validation-message {
+    color: red;
+    /*font-weight: bold;*/
+    margin-left: 10px;
+}
