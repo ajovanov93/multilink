@@ -14,3 +14,5 @@ You can replace the value of links param with any link or a list of links, like 
 `multilink.herokuapp.com?links=www.google.com,www.yahoo.com,www.bing.com`
 
 For more info go to [the usage page](http://multilink.herokuapp.com/usage).
+
+The code is avaliable under [GNU GPL V3] (https://www.gnu.org/copyleft/gpl.html)
