@@ -64,7 +64,7 @@ function redirectLink (link) {
 
     var win = window.open (link, "_blank");
 
-    //win.focus ();
+    win.focus ();
 }
 
 function redirect (links) {
@@ -103,9 +103,9 @@ function fillLinksList () {
     links.forEach (function (link) {
     	var li = document.createElement ("li");
     	
-    // Assume http if protocol is not supplied
-    if (!link.match (protocolRE))
-        link = "http://" + link;
+        // Assume http if protocol is not supplied
+        if (!link.match (protocolRE))
+            link = "http://" + link;
 
     	li.innerHTML = "<a href='" + link + "'>" + link + "</a>";
 
