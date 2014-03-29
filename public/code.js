@@ -16,18 +16,18 @@ function getLinks () {
     var url   = window.location.href;
 
     try {
-	var links = linksRE.exec (url)[1];
+    	var links = linksRE.exec (url)[1];
 
-	var result = links.split (",");
+    	var result = links.split (",");
 
-	if (result[0] != "")
-	    return result;
-	else
-	    throw "InvalidArgument: links mustn't be empty";
+    	if (result[0] != "")
+    	    return result;
+    	else
+    	    throw "InvalidArgument: links mustn't be empty";
     } catch (ex) {
-	noLinks ();
+    	noLinks ();
 
-	return [];
+    	return [];
     }
 }
 
@@ -35,11 +35,11 @@ function getMode () {
     var url = window.location.href;
 
     try {
-	var mode = modeRE.exec (url) [1];
+    	var mode = modeRE.exec (url) [1];
 
-	return mode;
+    	return mode;
     } catch (ex) {
-	return "manual";
+	   return "manual";
     }
 }
 
@@ -47,7 +47,7 @@ function getMode () {
 ////////////////////////////////////////////////////////////////////////////////
 function runStartupChecks () {
     if (!'localStorage' in window) {
-	alert ("Local storage is not supported.");
+	   alert ("Local storage is not supported.");
     }
 }
 
@@ -55,23 +55,23 @@ function runStartupChecks () {
 function redirectLink (link) {
     // Do not open links that execute javascript code
     if (link.match (/javascript:/)) {
-	return;
+	   return;
     }
 
     // Assume http if protocol is not supplied
     if (!link.match (protocolRE))
-	link = "http://" + link;
+    	link = "http://" + link;
 
-    var win = window.open (link, "_blank");
+        var win = window.open (link, "_blank");
 
-    //win.focus ();
+        //win.focus ();
 }
 
 function redirect (links) {
     for (i = 0; i < links.length; i++) {
-	var link = links [i];
+    	var link = links [i];
 
-	redirectLink (link);
+    	redirectLink (link);
     }
 }
 
@@ -80,17 +80,17 @@ function redirectWaitProgress () {
     window.redirectWaitSeconds -= 1;
 
     if (window.redirectWaitSeconds == 0) {
-	redirect (getLinks ());
+    	redirect (getLinks ());
 
-	clearInterval (window.redirectWait);
+    	clearInterval (window.redirectWait);
 
-	var btn = document.querySelector ("#redirect-btn");
+    	var btn = document.querySelector ("#redirect-btn");
 
-	btn.innerHTML = "Redirected. Happy browsing.";
-	
-	btn.disabled  = true;
+    	btn.innerHTML = "Redirected. Happy browsing.";
+    	
+    	btn.disabled  = true;
     } else {
-	document.querySelector ("#redirect-btn").innerHTML = "You will be redirected in " + window.redirectWaitSeconds + " seconds. Click to stop."
+	   document.querySelector ("#redirect-btn").innerHTML = "You will be redirected in " + window.redirectWaitSeconds + " seconds. Click to stop."
     }
 }
 
@@ -101,11 +101,11 @@ function fillLinksList () {
     links  = getLinks ();
 
     links.forEach (function (link) {
-	var li = document.createElement ("li");
-	
-	li.innerHTML = link;
+    	var li = document.createElement ("li");
+    	
+    	li.innerHTML = link;
 
-	ul.appendChild (li);
+    	ul.appendChild (li);
     });
 }
 
@@ -125,19 +125,19 @@ function noLinks () {
 ////////////////////////////////////////////////////////////////////////////////
 function buttonClicked () {
     if (window.redirectWait === 1) {
-	clearInterval (window.redirectWait);
+    	clearInterval (window.redirectWait);
 
-	// clearInterval will only stop the functions from firing again, it will not recycle the interval id
-	// so we do it manually
-	window.redirectWait = -1;
+    	// clearInterval will only stop the functions from firing again, it will not recycle the interval id
+    	// so we do it manually
+    	window.redirectWait = -1;
 
-	this.innerHTML = "Redirect";
+    	this.innerHTML = "Redirect";
     } else {
-	redirect (getLinks ()); 
+    	redirect (getLinks ()); 
 
-	this.innerHTML = "Redirected. Happy browsing.";
-	
-	this.disabled  = true;
+    	this.innerHTML = "Redirected. Happy browsing.";
+    	
+    	this.disabled  = true;
     }
 }
 
@@ -146,7 +146,8 @@ function linkClicked () {
 
     this.innerHTML = Settings.isAutomaticAllowed () ? "(disable)" : "(enable)";
 
-    document.querySelector ("#automatic-allowed").innerHTML = Settings.isAutomaticAllowed () ? "enabled" : "disabled"; 
+    document.querySelector ("#automatic-allowed").innerHTML = 
+        Settings.isAutomaticAllowed () ? "enabled" : "disabled"; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -159,7 +160,8 @@ function setupGUI () {
 
     allowAutomaticLink.innerHTML = Settings.isAutomaticAllowed () ? "(disable)" : "(enable)";
 
-    document.querySelector ("#automatic-allowed").innerHTML = Settings.isAutomaticAllowed () ? "enabled" : "disabled"; 
+    document.querySelector ("#automatic-allowed").innerHTML = 
+        Settings.isAutomaticAllowed () ? "enabled" : "disabled"; 
 
     fillLinksList ();
 }
@@ -176,13 +178,12 @@ window.onload = function () {
     setupGUI ();
 
     if (links == []) {
-	return;
+	   return;
     }
 
     if (mode == "automatic" && Settings.isAutomaticAllowed ()) {
-	window.redirectWaitSeconds = Settings.getTimeout ();
-	
-	window.redirectWait = setInterval (redirectWaitProgress, 1000);
+    	window.redirectWaitSeconds = Settings.getTimeout ();
+    	
+    	window.redirectWait = setInterval (redirectWaitProgress, 1000);
     }
 }
-

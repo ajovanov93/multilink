@@ -10,11 +10,11 @@ function timeoutEntryTextChanged () {
     var ok = re.test (text);
 
     if (ok) {
-	Settings.setTimeout (parseInt (text));
+    	Settings.setTimeout (parseInt (text));
 
-	messageElem.innerHTML = "";
+    	messageElem.innerHTML = "";
     } else {
-	messageElem.innerHTML = "Use only numbers.";
+	   messageElem.innerHTML = "Use only numbers.";
     }
 }
 
@@ -27,4 +27,3 @@ window.onload = function () {
     
     te.addEventListener ("keyup", timeoutEntryTextChanged);
 }
-
